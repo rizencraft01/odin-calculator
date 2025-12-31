@@ -1,29 +1,30 @@
-function add(a, b, operator) {
-    return a + ' ' + operator + ' ' + b
+function add(a, b) {
+    return display.value = a + b
 }
 
 function subtract(a, b) {
-    return a - b
+    return display.value = a - b
 }
 
 function multiply(a, b) {
-    return a * b
+    return display.value = a * b
 }
 
 function divide(a, b) {
-    return a / b
+    return display.value = a / b
 }
 
-let number;
-
-let operator;
+let number1;
 
 let number2;
 
-function operate(number, number2, operator) {
-    operator = operator 
+let displayValue;
 
-    return add(number, operator, number2)
+function operate(operation) {
+    if (operation.includes('+')) return add(number1, number2)
+    else if (operation.includes('-')) return subtract(number1, number2)
+    else if (operation.includes('*')) return multiply(number1, number2)
+    else if (operation.includes('/')) return divide(number1, number2)
 }
 
 const display = document.querySelector('.display')
@@ -35,6 +36,8 @@ const multiplyButton = document.querySelector('.multiply')
 const divideButton = document.querySelector('.divide')
 
 const addButton = document.querySelector('.add')
+
+const equalButton = document.querySelector('.equals')
 
 const subtractButton = document.querySelector('.subtract')
 
@@ -58,7 +61,11 @@ const number9Button = document.querySelector('.number9')
 
 const number0Button = document.querySelector('.number0')
 
-clearButton.addEventListener('click', () => display.value = '')
+clearButton.addEventListener('click', () => {
+    number1 = undefined
+    number2 = undefined
+    display.value = ''
+})
 
 number1Button.addEventListener('click', () => {
     display.value += '1'
@@ -114,4 +121,31 @@ addButton.addEventListener('click', () => {
 
 subtractButton.addEventListener('click', () => {
     display.value += '-'
+})
+
+equalButton.addEventListener('click', () => {
+    displayValue = display.value 
+
+    let operator;
+
+    const operatorExp = /\D/
+
+    for (value of displayValue) {
+        if (operatorExp.test(value) == true) {
+            operator = value
+            break
+        }      
+    }
+
+   let displayValueArray = displayValue.split(`${operator}`)
+
+    for (value of displayValueArray) {
+        value = Number(value)
+        if (Number.isInteger(value) == true && number1 == undefined) number1 = value
+        else if (Number.isInteger(value) == true && number1 != undefined) number2 = value
+    }
+
+    displayValue = displayValueArray.join(`${operator}`)
+
+    operate(displayValue)
 })
