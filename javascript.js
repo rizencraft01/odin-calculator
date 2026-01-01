@@ -1,22 +1,54 @@
 function add(a, b) {
-    return display.value = a + b
+    result = a + b 
+
+    resultString = result.toString() + button.textContent
+
+    number1 = undefined
+    number2 = undefined
+
+    return display.value = result
 }
 
 function subtract(a, b) {
-    return display.value = a - b
+    result = a - b
+
+    resultString = result.toString() + button.textContent
+
+    number1 = undefined
+    number2 = undefined
+
+    return display.value = result
 }
 
 function multiply(a, b) {
-    return display.value = a * b
+    result = a * b
+
+    resultString = result.toString() + button.textContent
+
+    number1 = undefined
+    number2 = undefined
+
+    return display.value = result
 }
 
 function divide(a, b) {
-    return display.value = a / b
+    result = a / b
+
+    resultString = result.toString() + button.textContent
+
+    number1 = undefined
+    number2 = undefined
+
+    return display.value = result
 }
 
 let number1;
 
 let number2;
+
+let result;
+
+let resultString;
 
 let displayValue;
 
@@ -32,136 +64,111 @@ const display = document.querySelector('.display')
 
 const clearButton = document.querySelector('.clear')
 
-const multiplyButton = document.querySelector('.multiply')
+const numberButtons = document.querySelectorAll('.number')
 
-const divideButton = document.querySelector('.divide')
+const signButtons = document.querySelectorAll('.sign')
 
-const addButton = document.querySelector('.add')
+const operatorExp = /\D/
 
-const equalButton = document.querySelector('.equals')
-
-const subtractButton = document.querySelector('.subtract')
-
-const number1Button = document.querySelector('.number1')
-
-const number2Button = document.querySelector('.number2')
-
-const number3Button = document.querySelector('.number3')
-
-const number4Button = document.querySelector('.number4')
-
-const number5Button = document.querySelector('.number5')
-
-const number6Button = document.querySelector('.number6')
-
-const number7Button = document.querySelector('.number7')
-
-const number8Button = document.querySelector('.number8')
-
-const number9Button = document.querySelector('.number9')
-
-const number0Button = document.querySelector('.number0')
-
-const operatorExp = /\D/g
+let button;
 
 clearButton.addEventListener('click', () => {
+    result = undefined
+    resultString = undefined
     number1 = undefined
     number2 = undefined
     display.value = ''
 })
 
-number1Button.addEventListener('click', () => {
-    display.value += '1'
-})
+for (let i = 0; i < numberButtons.length; i++) {
+    numberButtons[i].addEventListener('click', () => {
+        if (resultString == undefined) return display.value += numberButtons[i].textContent 
+        resultString += numberButtons[i].textContent 
+    })
+}
 
-number2Button.addEventListener('click', () => {
-    display.value += '2'
-})
+for (let i = 0; i < signButtons.length; i++) {
+    if (signButtons[i].textContent == 'equals') {
+        getDisplay()
+    }
+    else {
+        signButtons[i].addEventListener('click', () => {
+            button = signButtons[0] 
+            getDisplay()
+        })
+    }
+}
 
-number3Button.addEventListener('click', () => {
-    display.value += '3'
-})
+console.log(signButtons)
 
-number4Button.addEventListener('click', () => {
-    display.value += '4'
-})
+function checkResultString() {
 
-number5Button.addEventListener('click', () => {
-    display.value += '5'
-})
+    let operator;
 
-number6Button.addEventListener('click', () => {
-    display.value += '6'
-})
+    for (value of resultString) {
+        if (operatorExp.test(value) == true) {
+            operator = value
+            break
+        }      
+    }
+    
+    const resultStringArray = resultString.split(`${operator}`)
 
-number7Button.addEventListener('click', () => {
-    display.value += '7'
-})
+    if (resultStringArray.length != 2) {
+        return false
+    }
 
-number8Button.addEventListener('click', () => {
-    display.value += '8'
-})
+    for (value of resultStringArray) {
+        value = Number(value)
+        if (typeof(value) == 'number' == true && number1 == undefined) number1 = value
+        else if (typeof(value) == 'number' == true && number1 != undefined) number2 = value
+    }
 
-number9Button.addEventListener('click', () => {
-    display.value += '9'
-})
+    resultString = resultStringArray.join(`${operator}`)
 
-number0Button.addEventListener('click', () => {
-    display.value += '0'
-})
+    operate(resultString )
+    
 
-multiplyButton.addEventListener('click', () => {
-    getDisplay()
-    display.value += '*'
-})
-
-divideButton.addEventListener('click', () => {
-    getDisplay()
-    display.value += '/'
-})
-
-addButton.addEventListener('click', () => {
-   getDisplay()
-})
-
-subtractButton.addEventListener('click', () => {
-    getDisplay()
-    display.value += '-'
-})
+}
 
 function getDisplay() {
+    if (resultString != undefined) {
+
+        checkResultString()
+
+        return false
+    }
+
     displayValue = display.value
 
     let operator;
 
+    
+
     for (value of displayValue) {
         if (operatorExp.test(value) == true) {
             operator = value
-            splitOperator = value
             break
         }      
     }
+    
 
-   let displayValueArray = displayValue.split(`${operator}`)
+   const displayValueArray = displayValue.split(`${operator}`)
 
-   if (displayValueArray.length != 2 || displayValueArray.includes("")) {
-        display.value += `${operator}`
+    if (displayValueArray.length != 2 && resultString == undefined) {
+        display.value += button.textContent
         return false
-   } 
+    }
 
     for (value of displayValueArray) {
         value = Number(value)
-        if (Number.isInteger(value) == true && number1 == undefined) number1 = value
-        else if (Number.isInteger(value) == true && number1 != undefined) number2 = value
+        if (typeof(value) == 'number' == true && number1 == undefined) number1 = value
+        else if (typeof(value) == 'number' == true && number1 != undefined) number2 = value
     }
 
     displayValue = displayValueArray.join(`${operator}`)
 
     operate(displayValue)
 }
- 
-equalButton.addEventListener('click', () => {
-     
-    getDisplay()
-    
-})
+
+
