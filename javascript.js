@@ -25,6 +25,7 @@ function operate(operation) {
     else if (operation.includes('-')) return subtract(number1, number2)
     else if (operation.includes('*')) return multiply(number1, number2)
     else if (operation.includes('/')) return divide(number1, number2)
+    else alert('Error! That is not a valid operation!')
 }
 
 const display = document.querySelector('.display')
@@ -60,6 +61,8 @@ const number8Button = document.querySelector('.number8')
 const number9Button = document.querySelector('.number9')
 
 const number0Button = document.querySelector('.number0')
+
+const operatorExp = /\D/g
 
 clearButton.addEventListener('click', () => {
     number1 = undefined
@@ -108,36 +111,43 @@ number0Button.addEventListener('click', () => {
 })
 
 multiplyButton.addEventListener('click', () => {
+    getDisplay()
     display.value += '*'
 })
 
 divideButton.addEventListener('click', () => {
+    getDisplay()
     display.value += '/'
 })
 
 addButton.addEventListener('click', () => {
-    display.value += '+'
+   getDisplay()
 })
 
 subtractButton.addEventListener('click', () => {
+    getDisplay()
     display.value += '-'
 })
 
-equalButton.addEventListener('click', () => {
-    displayValue = display.value 
+function getDisplay() {
+    displayValue = display.value
 
     let operator;
-
-    const operatorExp = /\D/
 
     for (value of displayValue) {
         if (operatorExp.test(value) == true) {
             operator = value
+            splitOperator = value
             break
         }      
     }
 
    let displayValueArray = displayValue.split(`${operator}`)
+
+   if (displayValueArray.length != 2 || displayValueArray.includes("")) {
+        display.value += `${operator}`
+        return false
+   } 
 
     for (value of displayValueArray) {
         value = Number(value)
@@ -148,4 +158,10 @@ equalButton.addEventListener('click', () => {
     displayValue = displayValueArray.join(`${operator}`)
 
     operate(displayValue)
+}
+ 
+equalButton.addEventListener('click', () => {
+     
+    getDisplay()
+    
 })
