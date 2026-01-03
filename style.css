@@ -1,5 +1,29 @@
+
+#container {
+   border: solid lightgray;
+   text-align: center;
+   padding: 15px;
+   width: 50vw;
+   margin: auto;
+}
+
+.clear {
+    background: lightgray;
+    border: solid lightgray;
+}
+
 .display {
-    border: solid gray;
-    width: 46.5vw;
-    margin-bottom: 5px;
+    width: 15vw;
+    border: solid lightgray;
+}
+
+
+.number {
+    background: white;
+    border: solid lightgray;
+}
+
+.sign {
+    background: yellow;
+    border: solid lightgray;
 }

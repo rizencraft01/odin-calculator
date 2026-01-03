@@ -1,45 +1,29 @@
 function add(a, b) {
-    result = a + b 
+    result = a + b
 
-    resultString = result.toString() + button.textContent
-
-    number1 = undefined
-    number2 = undefined
-
-    return display.value = result
+    return giveResult()
 }
 
 function subtract(a, b) {
     result = a - b
 
-    resultString = result.toString() + button.textContent
-
-    number1 = undefined
-    number2 = undefined
-
-    return display.value = result
+    return giveResult()
 }
 
 function multiply(a, b) {
     result = a * b
 
-    resultString = result.toString() + button.textContent
-
-    number1 = undefined
-    number2 = undefined
-
-    return display.value = result
+    return giveResult()
 }
 
 function divide(a, b) {
     result = a / b
 
-    resultString = result.toString() + button.textContent
+    if (b == 0) {
+        alert("How can you divide by nothing?!")
+    }
 
-    number1 = undefined
-    number2 = undefined
-
-    return display.value = result
+    return giveResult()
 }
 
 let number1;
@@ -51,6 +35,8 @@ let result;
 let resultString;
 
 let displayValue;
+
+let newDisplayValue;
 
 function operate(operation) {
     if (operation.includes('+')) return add(number1, number2)
@@ -64,106 +50,83 @@ const display = document.querySelector('.display')
 
 const clearButton = document.querySelector('.clear')
 
-const numberButtons = document.querySelectorAll('.number')
+const numberButtons = Array.from(document.querySelectorAll('.number'))
 
-const signButtons = document.querySelectorAll('.sign')
+const signButtons = Array.from(document.querySelectorAll('.sign'))
 
 const operatorExp = /\D/
 
 let button;
 
 clearButton.addEventListener('click', () => {
-    result = undefined
-    resultString = undefined
+    newDisplayValue = undefined
     number1 = undefined
     number2 = undefined
-    display.value = ''
+    display.value =''
 })
 
 for (let i = 0; i < numberButtons.length; i++) {
     numberButtons[i].addEventListener('click', () => {
-        if (resultString == undefined) return display.value += numberButtons[i].textContent 
-        resultString += numberButtons[i].textContent 
+        button = numberButtons[i]
+
+        if (newDisplayValue != undefined && operatorExp.test(newDisplayValue) == true) {
+            newDisplayValue += button.textContent
+        }
+        else if (newDisplayValue != undefined && operatorExp.test(newDisplayValue) == false) {
+            display.value = button.textContent
+        }
+        else {
+            display.value += button.textContent
+        }
     })
 }
 
 for (let i = 0; i < signButtons.length; i++) {
-    if (signButtons[i].textContent == 'equals') {
-        getDisplay()
+    if (signButtons[i].textContent == '=') {
+        signButtons[i].addEventListener('click', () => {
+            button = '='
+            getDisplay()
+        })
     }
     else {
         signButtons[i].addEventListener('click', () => {
-            button = signButtons[0] 
+            button = signButtons[i]
             getDisplay()
         })
     }
 }
 
-console.log(signButtons)
-
-function checkResultString() {
-
-    let operator;
-
-    for (value of resultString) {
-        if (operatorExp.test(value) == true) {
-            operator = value
-            break
-        }      
-    }
-    
-    const resultStringArray = resultString.split(`${operator}`)
-
-    if (resultStringArray.length != 2) {
-        return false
-    }
-
-    for (value of resultStringArray) {
-        value = Number(value)
-        if (typeof(value) == 'number' == true && number1 == undefined) number1 = value
-        else if (typeof(value) == 'number' == true && number1 != undefined) number2 = value
-    }
-
-    resultString = resultStringArray.join(`${operator}`)
-
-    operate(resultString )
-    
-
-}
-
 function getDisplay() {
-    if (resultString != undefined) {
-
-        checkResultString()
-
-        return false
+     if (newDisplayValue != undefined && operatorExp.test(newDisplayValue) == true) {
+        displayValue = newDisplayValue
     }
-
-    displayValue = display.value
-
-    let operator;
-
+    else {
+        displayValue = display.value
+    }
     
+    let operator;
 
     for (value of displayValue) {
-        if (operatorExp.test(value) == true) {
+        if (operatorExp.test(value) == true && value != '.') {
             operator = value
             break
         }      
     }
     
-
    const displayValueArray = displayValue.split(`${operator}`)
 
-    if (displayValueArray.length != 2 && resultString == undefined) {
-        display.value += button.textContent
+    if (displayValueArray.length != 2 || displayValueArray.includes("")) {
+        if (signButtons.includes(button)) {
+            newDisplayValue = displayValue + button.textContent
+        }
+
         return false
     }
 
     for (value of displayValueArray) {
         value = Number(value)
-        if (typeof(value) == 'number' == true && number1 == undefined) number1 = value
-        else if (typeof(value) == 'number' == true && number1 != undefined) number2 = value
+        if (typeof(value) == 'number' && number1 == undefined) number1 = value
+        else if (typeof(value) == 'number' && number1 != undefined) number2 = value
     }
 
     displayValue = displayValueArray.join(`${operator}`)
@@ -171,4 +134,16 @@ function getDisplay() {
     operate(displayValue)
 }
 
-
+function giveResult() {
+    number1 = undefined
+    number2 = undefined
+    
+    if (button == '=') {
+        newDisplayValue = result.toString()
+        return display.value = newDisplayValue
+    }
+    else {
+        newDisplayValue = result.toString() + button.textContent
+        return display.value = result.toString()
+    }
+}
